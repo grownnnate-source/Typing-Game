@@ -10,8 +10,8 @@ import MultiplayerResults from "./components/MultiplayerResults";
 import Footer from "./components/Footer";
 
 const App = () => {
-  // Navigation: "solo" vs "multiplayer"
-  const [activeTab, setActiveTab] = useState("solo");
+  // Navigation: "multiplayer" (main gaming platform) vs "solo" (practice)
+  const [activeTab, setActiveTab] = useState("multiplayer");
 
   // --- Solo State ---
   const [soloMode, setSoloMode] = useState("time");
@@ -145,11 +145,16 @@ const App = () => {
       }
     }
 
-    if (val.length <= soloParagraph.length) {
-      setSoloUserInput(val);
-      if (soloMode === "words" && val.length === soloParagraph.length) {
-        finishSoloGame(val);
-      }
+    setSoloUserInput(val);
+
+    // Continuous typing in time mode: append more words when approaching the end
+    if (soloMode === "time" && val.length >= soloParagraph.length - 40) {
+      const extraWords = " wonder journey light future across echo horizon dream river forest whisper castle silent silver starlight meadow breeze cosmic ocean shadow vibrant rhythm wander";
+      setSoloParagraph((prev) => prev + extraWords);
+    }
+
+    if (soloMode === "words" && val.length === soloParagraph.length) {
+      finishSoloGame(val);
     }
   };
 
@@ -347,6 +352,7 @@ const App = () => {
               onJoinRoom={handleJoinRoom}
               onStartRace={handleStartRace}
               onLeaveRoom={handleLeaveRoom}
+              onSwitchToSolo={() => setActiveTab("solo")}
               errorMessage={errorMessage}
             />
           )}

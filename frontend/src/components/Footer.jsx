@@ -18,10 +18,6 @@ const Footer = () => {
         >
           github
         </a>
-        <span style={{ color: "var(--sub-alt-color)" }}>•</span>
-        <span className="footer-link" style={{ cursor: "default" }}>
-          monkeytype inspired
-        </span>
       </div>
     </footer>
   );

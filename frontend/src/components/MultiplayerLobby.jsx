@@ -9,6 +9,7 @@ const MultiplayerLobby = ({
   onJoinRoom,
   onStartRace,
   onLeaveRoom,
+  onSwitchToSolo,
   errorMessage
 }) => {
   const [joinCode, setJoinCode] = useState("");
@@ -22,7 +23,7 @@ const MultiplayerLobby = ({
     }
   };
 
-  // View when not yet inside a room
+  // View when not yet inside a room (Main Gaming Landing Page)
   if (!room) {
     return (
       <div
@@ -31,23 +32,80 @@ const MultiplayerLobby = ({
           flexDirection: "column",
           alignItems: "center",
           gap: "24px",
-          maxWidth: "460px",
+          maxWidth: "520px",
           width: "100%",
-          margin: "40px auto",
-          padding: "32px",
-          backgroundColor: "#151d2f",
-          borderRadius: "16px",
-          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.4)",
-          border: "1px solid #1e293b"
+          margin: "30px auto",
+          padding: "36px 32px",
+          backgroundColor: "#131b2e",
+          borderRadius: "20px",
+          boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(56, 189, 248, 0.15)",
+          border: "1px solid #1e293b",
+          position: "relative",
+          overflow: "hidden"
         }}
       >
+        {/* Glow ambient background accent */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-80px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "240px",
+            height: "120px",
+            background: "radial-gradient(ellipse, rgba(56, 189, 248, 0.25), transparent 70%)",
+            pointerEvents: "none"
+          }}
+        />
+
+        {/* Badge */}
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "4px 12px",
+            backgroundColor: "rgba(56, 189, 248, 0.12)",
+            border: "1px solid rgba(56, 189, 248, 0.25)",
+            borderRadius: "999px",
+            fontSize: "11px",
+            fontWeight: "700",
+            color: "#38bdf8",
+            letterSpacing: "0.5px"
+          }}
+        >
+          <span>⚔️</span>
+          <span>REAL-TIME 1v1 & MULTIPLAYER SPEED BATTLES</span>
+        </div>
+
         <div style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: "24px", fontWeight: "700", color: "#f1f5f9", marginBottom: "8px" }}>
-            Multiplayer Typing Race
+          <h2 style={{ fontSize: "28px", fontWeight: "800", color: "#f8fafc", marginBottom: "8px", letterSpacing: "-0.5px" }}>
+            Challenge Friends in a Typing Duel
           </h2>
-          <p style={{ fontSize: "14px", color: "#64748b" }}>
-            Race against up to 5 friends in real-time with live competitor cursors!
+          <p style={{ fontSize: "14px", color: "#94a3b8", lineHeight: 1.5 }}>
+            Create a private battle room or enter a friend's PIN code. Race character-by-character with live multi-player cursor tracking!
           </p>
+        </div>
+
+        {/* Feature Highlights Pills */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+            width: "100%"
+          }}
+        >
+          <span style={{ fontSize: "11px", color: "#64748b", padding: "4px 10px", backgroundColor: "#0b0f19", borderRadius: "6px", border: "1px solid #1e293b" }}>
+            🏎️ Live Opponent Carets
+          </span>
+          <span style={{ fontSize: "11px", color: "#64748b", padding: "4px 10px", backgroundColor: "#0b0f19", borderRadius: "6px", border: "1px solid #1e293b" }}>
+            ⚡ Instant Sync
+          </span>
+          <span style={{ fontSize: "11px", color: "#64748b", padding: "4px 10px", backgroundColor: "#0b0f19", borderRadius: "6px", border: "1px solid #1e293b" }}>
+            🏆 Podium & Leaderboard
+          </span>
         </div>
 
         {errorMessage && (
@@ -69,8 +127,8 @@ const MultiplayerLobby = ({
 
         {/* Player Name */}
         <div style={{ width: "100%" }}>
-          <label style={{ display: "block", fontSize: "12px", color: "#64748b", marginBottom: "6px" }}>
-            YOUR NICKNAME
+          <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#94a3b8", marginBottom: "6px", letterSpacing: "0.5px" }}>
+            YOUR RACER NICKNAME
           </label>
           <input
             type="text"
@@ -80,15 +138,18 @@ const MultiplayerLobby = ({
             maxLength={16}
             style={{
               width: "100%",
-              padding: "12px 14px",
+              padding: "12px 16px",
               backgroundColor: "#0b0f19",
               border: "1px solid #1e293b",
-              borderRadius: "8px",
+              borderRadius: "10px",
               color: "#f1f5f9",
               fontFamily: "inherit",
               fontSize: "15px",
-              outline: "none"
+              outline: "none",
+              transition: "border-color 0.15s ease"
             }}
+            onFocus={(e) => (e.target.style.borderColor = "#38bdf8")}
+            onBlur={(e) => (e.target.style.borderColor = "#1e293b")}
           />
         </div>
 
@@ -100,22 +161,34 @@ const MultiplayerLobby = ({
             padding: "14px",
             backgroundColor: "#38bdf8",
             color: "#0b0f19",
-            fontWeight: "700",
+            fontWeight: "800",
             fontSize: "15px",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "10px",
             cursor: "pointer",
-            transition: "transform 0.1s ease, filter 0.1s ease"
+            boxShadow: "0 4px 14px rgba(56, 189, 248, 0.35)",
+            transition: "all 0.15s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px"
           }}
-          onMouseEnter={(e) => (e.target.style.filter = "brightness(1.1)")}
-          onMouseLeave={(e) => (e.target.style.filter = "brightness(1.0)")}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.filter = "brightness(1.1)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.filter = "brightness(1.0)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
         >
-          Create Private Room
+          <span>🏁</span>
+          <span>Create Private Battle Room</span>
         </button>
 
         <div style={{ display: "flex", alignItems: "center", width: "100%", gap: "12px" }}>
           <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
-          <span style={{ fontSize: "12px", color: "#64748b" }}>OR JOIN CODE</span>
+          <span style={{ fontSize: "11px", fontWeight: "600", color: "#64748b" }}>OR ENTER ROOM PIN</span>
           <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
         </div>
 
@@ -125,38 +198,60 @@ const MultiplayerLobby = ({
             type="text"
             value={joinCode}
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-            placeholder="Room code (e.g. K9P2)"
+            onKeyDown={(e) => e.key === "Enter" && onJoinRoom(joinCode)}
+            placeholder="Room PIN (e.g. K9P2)"
             maxLength={6}
             style={{
               flex: 1,
               padding: "12px 14px",
               backgroundColor: "#0b0f19",
               border: "1px solid #1e293b",
-              borderRadius: "8px",
+              borderRadius: "10px",
               color: "#f1f5f9",
               fontFamily: "inherit",
               fontSize: "15px",
               textTransform: "uppercase",
-              letterSpacing: "1px",
+              letterSpacing: "1.5px",
               outline: "none"
             }}
           />
           <button
             onClick={() => onJoinRoom(joinCode)}
             style={{
-              padding: "12px 20px",
+              padding: "12px 24px",
               backgroundColor: "#1e293b",
               color: "#f1f5f9",
-              fontWeight: "600",
+              fontWeight: "700",
               fontSize: "14px",
               border: "none",
-              borderRadius: "8px",
-              cursor: "pointer"
+              borderRadius: "10px",
+              cursor: "pointer",
+              transition: "background-color 0.15s ease"
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#334155")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1e293b")}
           >
-            Join
+            Join Race
           </button>
         </div>
+
+        {/* Solo Practice link */}
+        {onSwitchToSolo && (
+          <div style={{ marginTop: "4px", fontSize: "13px", color: "#64748b" }}>
+            Want to warm up by yourself first?{" "}
+            <span
+              onClick={onSwitchToSolo}
+              style={{
+                color: "#38bdf8",
+                fontWeight: "600",
+                cursor: "pointer",
+                textDecoration: "underline"
+              }}
+            >
+              Switch to Solo Practice
+            </span>
+          </div>
+        )}
       </div>
     );
   }

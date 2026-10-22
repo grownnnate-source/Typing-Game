@@ -188,13 +188,18 @@ body {
   line-height: 1.5;
   outline: none;
   cursor: default;
+  height: 138px;
+  max-height: 138px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.words-scroll-track {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  min-height: 140px;
-  max-height: 165px;
-  overflow: hidden;
-  position: relative;
+  width: 100%;
+  will-change: transform;
 }
 
 .word {

@@ -51,6 +51,55 @@ const TypingArea = ({
   };
 
   const words = paragraph ? paragraph.split(" ") : [];
+  const wordRefs = useRef([]);
+  const [lineShift, setLineShift] = useState(0);
+
+  // Compute which word index is currently being typed
+  let activeWordIndex = 0;
+  let runningCharCount = 0;
+  for (let i = 0; i < words.length; i++) {
+    const wordLen = words[i].length + 1; // includes space
+    if (userInput.length < runningCharCount + wordLen || i === words.length - 1) {
+      activeWordIndex = i;
+      break;
+    }
+    runningCharCount += wordLen;
+  }
+
+  // MonkeyType 3-Line Smooth Scrolling
+  // When active word reaches line 3 or beyond, shift up so active word stays on line 2
+  useEffect(() => {
+    if (!words.length || userInput.length === 0) {
+      setLineShift(0);
+      return;
+    }
+
+    const activeEl = wordRefs.current[activeWordIndex];
+    const firstEl = wordRefs.current[0];
+    if (!activeEl || !firstEl) return;
+
+    const baseTop = firstEl.offsetTop;
+    const currentTop = activeEl.offsetTop;
+    const deltaY = currentTop - baseTop;
+
+    // Approximate single line height (element height + margin)
+    const lineHeight = activeEl.offsetHeight > 0 ? activeEl.offsetHeight + 6 : 44;
+
+    // Line 1: deltaY ~ 0 -> shift = 0
+    // Line 2: deltaY ~ 1 * lineHeight -> shift = 0 (user sees Line 1 above, Line 2 active, Line 3 below)
+    // Line 3+: deltaY >= 1.4 * lineHeight -> shift = deltaY - lineHeight (active line stays at visual line 2)
+    if (deltaY > lineHeight * 1.4) {
+      setLineShift(deltaY - lineHeight);
+    } else {
+      setLineShift(0);
+    }
+  }, [userInput, activeWordIndex, paragraph]);
+
+  // Reset shift on paragraph change or game restart
+  useEffect(() => {
+    setLineShift(0);
+  }, [paragraph]);
+
   let charCounter = 0;
 
   // Helper to find opponents currently positioned at a specific character index
@@ -126,15 +175,30 @@ const TypingArea = ({
 
       {/* Words Box */}
       <div className="words-container" style={{ position: "relative" }}>
-        {words.map((word, wordIndex) => {
-          const wordStartIndex = charCounter;
-          const wordChars = word.split("");
-          const isLastWord = wordIndex === words.length - 1;
-          const spaceIndex = wordStartIndex + wordChars.length;
-          charCounter = spaceIndex + (isLastWord ? 0 : 1);
+        <div
+          className="words-scroll-track"
+          style={{
+            transform: `translateY(-${lineShift}px)`,
+            transition: "transform 0.18s cubic-bezier(0.25, 1, 0.5, 1)",
+            display: "flex",
+            flexWrap: "wrap",
+            alignContent: "flex-start",
+            width: "100%"
+          }}
+        >
+          {words.map((word, wordIndex) => {
+            const wordStartIndex = charCounter;
+            const wordChars = word.split("");
+            const isLastWord = wordIndex === words.length - 1;
+            const spaceIndex = wordStartIndex + wordChars.length;
+            charCounter = spaceIndex + (isLastWord ? 0 : 1);
 
-          return (
-            <div className="word" key={wordIndex}>
+            return (
+              <div
+                className="word"
+                key={wordIndex}
+                ref={(el) => (wordRefs.current[wordIndex] = el)}
+              >
               {wordChars.map((char, charIdx) => {
                 const globalIndex = wordStartIndex + charIdx;
                 const isCurrent = globalIndex === userInput.length;
@@ -258,10 +322,11 @@ const TypingArea = ({
           );
         })}
 
-        {/* Caret at the end of the text */}
-        {userInput.length >= paragraph.length && paragraph.length > 0 && (
-          <span className="caret" />
-        )}
+          {/* Caret at the end of the text */}
+          {userInput.length >= paragraph.length && paragraph.length > 0 && (
+            <span className="caret" />
+          )}
+        </div>
       </div>
 
       {/* Restart Button (Single player only) */}
