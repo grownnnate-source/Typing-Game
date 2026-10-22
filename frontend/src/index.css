@@ -1,12 +1,12 @@
 :root {
-  --bg-color: #323437;
-  --main-color: #e2b714;
-  --caret-color: #e2b714;
-  --sub-color: #646669;
-  --sub-alt-color: #2c2e31;
-  --text-color: #d1d0c5;
-  --error-color: #ca4754;
-  --error-extra-color: #7e2a33;
+  --bg-color: #0b0f19;
+  --card-bg: #151d2f;
+  --main-color: #38bdf8;
+  --caret-color: #38bdf8;
+  --sub-color: #64748b;
+  --sub-alt-color: #172136;
+  --text-color: #f1f5f9;
+  --error-color: #f43f5e;
   --font-mono: 'Roboto Mono', monospace;
 }
 
